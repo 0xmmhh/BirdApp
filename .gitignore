@@ -1,0 +1,24 @@
+# .NET artifacts
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+
+# Local SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# JetBrains Rider & IDEs
+.idea/
+.vscode/
+
+# Frontend (Phase 3)
+node_modules/
+dist/
+build/
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
