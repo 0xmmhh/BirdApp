@@ -76,18 +76,17 @@ public class SightingsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateSighting(int id, [FromBody] Sighting sighting)
+    public async Task<ActionResult> UpdateSighting(int id, [FromBody] CreateSightingDto dto)
     {
-        if (id != sighting.Id) return BadRequest();
-        var query = await _context.Sightings.FindAsync(id);
+        var sighting = await _context.Sightings.FindAsync(id);
 
-        if (query is null) return NotFound();
+        if (sighting is null) return NotFound();
 
-        query.Date = sighting.Date;
-        query.Latitude = sighting.Latitude;
-        query.Longitude = sighting.Longitude;
-        query.Notes = sighting.Notes;
-        query.SpeciesId = sighting.SpeciesId;
+        sighting.Date = dto.Date;
+        sighting.Latitude = dto.Latitude;
+        sighting.Longitude = dto.Longitude;
+        sighting.Notes = dto.Notes;
+        sighting.SpeciesId = dto.SpeciesId;
 
         await _context.SaveChangesAsync();
 
