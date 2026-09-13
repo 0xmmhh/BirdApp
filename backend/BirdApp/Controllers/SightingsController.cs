@@ -18,17 +18,33 @@ public class SightingsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Sighting>>> GetSightings()
+    public async Task<ActionResult<List<SightingResponseDto>>> GetSightings()
     {
-        return await _context.Sightings.ToListAsync();
+        var sightings = await _context.Sightings.Select(s => new SightingResponseDto(s.Id, s.Latitude, s.Longitude,
+            s.Date, s.Notes, s.SpeciesId, s.Species != null ? s.Species.Name : null)).ToListAsync();
+        return Ok(sightings);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Sighting>> GetSightingById([FromRoute] int id)
+    public async Task<ActionResult<SightingResponseDto>> GetSightingById([FromRoute] int id)
     {
-        var result = await _context.Sightings.FindAsync(id);
-        if (result is null) return NotFound();
-        return result;
+        var sighting = await _context.Sightings
+            .Include(s => s.Species)
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        if (sighting is null) return NotFound();
+
+        var response = new SightingResponseDto(
+            sighting.Id,
+            sighting.Latitude,
+            sighting.Longitude,
+            sighting.Date,
+            sighting.Notes,
+            sighting.SpeciesId,
+            sighting.Species?.Name
+        );
+
+        return Ok(response);
     }
 
     [HttpPost]
