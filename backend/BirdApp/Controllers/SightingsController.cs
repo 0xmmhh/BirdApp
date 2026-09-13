@@ -1,4 +1,5 @@
 using BirdApp.Data;
+using BirdApp.DTOs;
 using BirdApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,11 +32,31 @@ public class SightingsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Sighting>> AddSighting(Sighting sighting)
+    public async Task<ActionResult<SightingResponseDto>> AddSighting(CreateSightingDto dto)
     {
+        var sighting = new Sighting
+        {
+            Latitude = dto.Latitude,
+            Longitude = dto.Longitude,
+            Date = dto.Date,
+            Notes = dto.Notes,
+            SpeciesId = dto.SpeciesId
+        };
+
         _context.Sightings.Add(sighting);
         await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetSightingById), new { id = sighting.Id });
+
+        var response = new SightingResponseDto(
+            sighting.Id,
+            sighting.Latitude,
+            sighting.Longitude,
+            sighting.Date,
+            sighting.Notes,
+            sighting.SpeciesId,
+            null
+        );
+
+        return CreatedAtAction(nameof(GetSightingById), new { id = sighting.Id }, response);
     }
 
     [HttpPut("{id}")]
