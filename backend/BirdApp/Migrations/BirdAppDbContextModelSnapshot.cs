@@ -55,7 +55,7 @@ namespace BirdApp.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("SpeciesId")
+                    b.Property<int?>("SpeciesId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -98,9 +98,7 @@ namespace BirdApp.Migrations
                 {
                     b.HasOne("BirdApp.Models.Species", "Species")
                         .WithMany("Sightings")
-                        .HasForeignKey("SpeciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SpeciesId");
 
                     b.Navigation("Species");
                 });
