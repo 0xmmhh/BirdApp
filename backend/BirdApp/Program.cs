@@ -1,5 +1,6 @@
 using BirdApp.Data;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 const string corsPolicyName = "AllowFrontend";
@@ -25,8 +26,9 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(options => { options.RouteTemplate = "openapi/{documentName}.json"; });
+
+    app.MapScalarApiReference(options => { options.WithOpenApiRoutePattern("/openapi/{documentName}.json"); });
 }
 
 app.UseHttpsRedirection();
